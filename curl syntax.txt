@@ -1,0 +1,20 @@
+we need to wrap the request into double quotes and escape them
+
+
+POST A QUESTION
+
+C:\Users\marco\curl-7.49.0-win64-mingw\bin>curl -v -H "Content-Type: application/json" -X POST http://localhost:5000/questions 
+-d "{\"user\":\"testc\", \"description\":\"myttl\", \"amount\": 1.0, \"questionDate\":\"2015-06-25\", \"provisionType\":\"COUNCIL\"}"
+
+RETRIEVING A QUESTION
+
+curl -v  http://localhost:5000/questions/First
+
+UPDATING A QUESTION
+
+C:\Users\marco\curl-7.49.0-win64-mingw\bin>curl -v -H "Content-Type:application/json" -X PUT http://localhost:5000/questions/3 -d "{\"description\":\"UpdatedTTl\", \"amount\":2.1}"
+
+
+DELETING A QUESTION
+
+curl -v -X DELETE http://localhost:5000/questions/1

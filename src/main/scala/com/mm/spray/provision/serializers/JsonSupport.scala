@@ -1,0 +1,21 @@
+package com.mm.spray.provision.serializers
+
+import java.text.SimpleDateFormat
+
+import org.json4s.ext.JodaTimeSerializers
+import org.json4s.{DefaultFormats, Formats}
+import spray.httpx.Json4sSupport
+
+trait JsonSupport extends Json4sSupport {
+
+  
+  implicit def json4sFormats: Formats = customDateFormat ++ JodaTimeSerializers.all ++ CustomSerializers.all
+
+  
+  val customDateFormat = new DefaultFormats {
+    println("Calling custom dt format..")
+    override def dateFormatter = new SimpleDateFormat("yyyy-MM-dd")
+  }
+  
+  
+}
