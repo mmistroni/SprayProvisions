@@ -14,37 +14,37 @@ import spray.http.StatusCodes._
 trait ProvisionResource extends MyHttpService {
   val provisionService: ProvisionService
   
-  def questionRoutes: Route = pathPrefix("provisions") {
+  def provisionRoutes: Route = pathPrefix("provisions") {
     pathEnd {
       post {
         entity(as[Provision]) { question =>
           completeWithLocationHeader(
-            resourceId = provisionService.createQuestion(question),
+            resourceId = provisionService.createProvision(question),
             ifDefinedStatus = Created.intValue, ifEmptyStatus = 409)
         }
       } ~
       get {
-        complete(provisionService.getAllQuestions)
+        complete(provisionService.getAllProvisions)
       }
     } ~
     path ("provisionType" / Segment){provisionType =>
       get {
-        complete(provisionService.getQuestionsByProvisionType(ProvisionTypeEnum.withName(provisionType)))
+        complete(provisionService.getProvisionsByProvisionType(ProvisionTypeEnum.withName(provisionType)))
       }
     } ~
     path(Segment) {id =>
       get {
-        complete(provisionService.getQuestionById(id.toInt))
+        complete(provisionService.getProvisionById(id.toInt))
       } ~
       put {
         entity(as[ProvisionUpdate]) {update =>
-          val q = provisionService.updateQuestion(id, update)
+          val q = provisionService.updateProvision(id, update)
           complete(q)
         }
       } ~
       delete {
         complete {
-            provisionService.deleteQuestion(id) map {
+            provisionService.deleteProvision(id) map {
               case true => println("Its true. returning no content");spray.http.StatusCodes.NoContent
               case false => println("It sfalse. returning not found");  spray.http.StatusCodes.NotFound
               

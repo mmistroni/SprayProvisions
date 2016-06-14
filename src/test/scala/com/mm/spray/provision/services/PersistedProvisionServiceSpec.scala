@@ -27,124 +27,124 @@ class PersistedProvisionServiceSpec extends FreeSpec with Matchers {
     new LocalDate(dt)
   }
 
-  val questionService = new PersistedProvisionService(mockDb)
+  val provisionService = new PersistedProvisionService(mockDb)
 
   "The PersistedProvisionService" - {
-    "when calling createQuestion it should call questionService.creteQuestion" - {
-      "should return the created Question" in {
-        val testQuestion = Provision(None, "1", "title", 1.0, createDate(new java.util.Date()), COUNCIL)
-        Mockito.when(mockDb.createQuestion(testQuestion)).thenReturn(Future[Provision] { testQuestion })
-        val future = questionService.createQuestion(testQuestion)
+    "when calling createProvision it should call ProvisionService.creteProvision" - {
+      "should return the created Provision" in {
+        val testProvision = Provision(None, "1", "title", 1.0, createDate(new java.util.Date()), COUNCIL)
+        Mockito.when(mockDb.createProvision(testProvision)).thenReturn(Future[Provision] { testProvision })
+        val future = provisionService.createProvision(testProvision)
         whenReady(future) {
-          res => res should equal(Some(testQuestion.user))
+          res => res should equal(Some(testProvision.user))
         }
-        Mockito.verify(mockDb).createQuestion(testQuestion)
+        Mockito.verify(mockDb).createProvision(testProvision)
       }
     }
-    "when calling updateQuestion it should call questionService.updatedQuestion" - {
-      "should return the updatedQuestion Question" in {
+    "when calling updateProvision it should call ProvisionService.updatedProvision" - {
+      "should return the updatedProvision Provision" in {
         val questionId = 11
-        val testQuestion = Provision(Some(questionId), "2", "title", 2.0, createDate(new java.util.Date()), COUNCIL)
+        val testProvision = Provision(Some(questionId), "2", "title", 2.0, createDate(new java.util.Date()), COUNCIL)
         val updatedQuestion = ProvisionUpdate(Some("updatetitle"), Some(2.1))
-        val returnedQuestion = testQuestion.copy(description = updatedQuestion.description.get, amount = updatedQuestion.amount.get)
-        Mockito.when(mockDb.updateQuestion(questionId, updatedQuestion.description, updatedQuestion.amount))
+        val returnedQuestion = testProvision.copy(description = updatedQuestion.description.get, amount = updatedQuestion.amount.get)
+        Mockito.when(mockDb.updateProvision(questionId, updatedQuestion.description, updatedQuestion.amount))
           .thenReturn(Future[Option[Provision]] { Some(returnedQuestion) })
 
-        val future = questionService.updateQuestion(questionId.toString(), updatedQuestion)
+        val future = provisionService.updateProvision(questionId.toString(), updatedQuestion)
         whenReady(future) {
           res => res should equal(Some(returnedQuestion))
         }
-        Mockito.verify(mockDb).updateQuestion(questionId, updatedQuestion.description, updatedQuestion.amount)
+        Mockito.verify(mockDb).updateProvision(questionId, updatedQuestion.description, updatedQuestion.amount)
       }
     }
     
-    "when calling DELETE questions for aN existing question with JsonPayLoad" - {
+    "when calling DELETE provisions for aN existing provision with JsonPayLoad" - {
       "should return false when delete operation returns false" in {
         val id = 21
-        val testQuestion = Provision(Some(id), "test", "title", 4.0, createDate(new java.util.Date()), COUNCIL)
+        val testProvision = Provision(Some(id), "test", "title", 4.0, createDate(new java.util.Date()), COUNCIL)
         val futureResult = false
-        Mockito.when(mockDb.deleteQuestionById(testQuestion.questionId.get)).thenReturn(Future[Boolean] { futureResult })
+        Mockito.when(mockDb.deleteProvisionById(testProvision.questionId.get)).thenReturn(Future[Boolean] { futureResult })
 
-        val future = questionService.deleteQuestion(id.toString)
+        val future = provisionService.deleteProvision(id.toString)
         whenReady(future) {
           res =>
             res should equal(futureResult)
-            Mockito.verify(mockDb).deleteQuestionById(id)
+            Mockito.verify(mockDb).deleteProvisionById(id)
         }
       }
     }
     
-    "when calling DELETE questions for aN existing question with JsonPayLoad" - {
+    "when calling DELETE provisions for aN existing provision with JsonPayLoad" - {
       "should return true when delete operation returns true" in {
         val id = 22
-        val testQuestion = Provision(Some(id), "11", "title", 1.0, createDate(new java.util.Date()), COUNCIL)
+        val testProvision = Provision(Some(id), "11", "title", 1.0, createDate(new java.util.Date()), COUNCIL)
         val futureResult = true
-        Mockito.when(mockDb.deleteQuestionById(testQuestion.questionId.get)).thenReturn(Future[Boolean] { futureResult })
+        Mockito.when(mockDb.deleteProvisionById(testProvision.questionId.get)).thenReturn(Future[Boolean] { futureResult })
 
-        val future = questionService.deleteQuestion(id.toString())
+        val future = provisionService.deleteProvision(id.toString())
         whenReady(future) {
           res =>
             res should equal(futureResult)
-            Mockito.verify(mockDb).deleteQuestionById(id)
+            Mockito.verify(mockDb).deleteProvisionById(id)
         }
       }
     }
     
-    "when calling GET questions for an existing question with JsonPayLoad" - {
-      "should return the stored Question" in {
-        val testQuestion = Provision(None, "test", "title",5.0, createDate(new java.util.Date()), COUNCIL )
-        Mockito.when(mockDb.findQuestionById(testQuestion.user)).thenReturn(Future[Option[Provision]]{Some(testQuestion)})
-        val future = questionService.getQuestion(testQuestion.user)
+    "when calling GET provisions for an existing provision with JsonPayLoad" - {
+      "should return the stored provision" in {
+        val testProvision = Provision(None, "test", "title",5.0, createDate(new java.util.Date()), COUNCIL )
+        Mockito.when(mockDb.findProvisionById(testProvision.user)).thenReturn(Future[Option[Provision]]{Some(testProvision)})
+        val future = provisionService.getProvision(testProvision.user)
         whenReady(future) {
           res =>
-            res.get should equal(testQuestion)
-            Mockito.verify(mockDb).findQuestionById(testQuestion.user)
+            res.get should equal(testProvision)
+            Mockito.verify(mockDb).findProvisionById(testProvision.user)
         }
       }
     }
     
-    "when calling GET questions for a non existing question with JsonPayLoad" - {
+    "when calling GET provisions for a non existing provision with JsonPayLoad" - {
       "should return None" in {
-        val testQuestion = Provision(None, "test3", "title", 6.0, createDate(new java.util.Date()), COUNCIL )
-        Mockito.when(mockDb.findQuestionById(testQuestion.user)).thenReturn(Future[Option[Provision]]{None})
-        val future = questionService.getQuestion(testQuestion.user)
+        val testProvision = Provision(None, "test3", "title", 6.0, createDate(new java.util.Date()), COUNCIL )
+        Mockito.when(mockDb.findProvisionById(testProvision.user)).thenReturn(Future[Option[Provision]]{None})
+        val future = provisionService.getProvision(testProvision.user)
         whenReady(future) {
           res =>
             res should equal(None)
-            Mockito.verify(mockDb).findQuestionById(testQuestion.user)
+            Mockito.verify(mockDb).findProvisionById(testProvision.user)
         }
       }
     }
     
-    "when calling GETAll questions for when there are questions with JsonPayLoad" - {
-      "should return all the quesitons" in {
-        val testQuestion = Provision(None, "test3", "title", 7.0, createDate(new java.util.Date()), COUNCIL )
-        val questions =  for(i <- 1 to 5) yield testQuestion.copy(description=s"title$i")
-        println("Questions are:"  +questions)
-        Mockito.when(mockDb.findAllQuestions).thenReturn(Future[Seq[Provision]]{questions})
-        val future = questionService.getAllQuestions
+    "when calling GETAll provisions for when there are provisons with JsonPayLoad" - {
+      "should return all the provisions" in {
+        val testProvision = Provision(None, "test3", "title", 7.0, createDate(new java.util.Date()), COUNCIL )
+        val provisions =  for(i <- 1 to 5) yield testProvision.copy(description=s"title$i")
+        println("Questions are:"  +provisions)
+        Mockito.when(mockDb.findAllProvisions).thenReturn(Future[Seq[Provision]]{provisions})
+        val future = provisionService.getAllProvisions
         whenReady(future) {
           res =>
             println("Result is :" + res)
-            res should equal(questions)
-            Mockito.verify(mockDb).findAllQuestions
+            res should equal(provisions)
+            Mockito.verify(mockDb).findAllProvisions
         }
       }
     }
     
-    "when calling GETquestionByProvisionType " - {
-      "should return all the questions available for that type" in {
+    "when calling GETprovisionByProvisionType " - {
+      "should return all the provisions available for that type" in {
         val provType = COUNCIL
-        val testQuestion = Provision(None, "test3", "title", 8.0, createDate(new java.util.Date()), provType )
-        val questions =  for(i <- 1 to 5) yield testQuestion.copy(description=s"title$i")
-        println("Questions are:"  +questions)
-        Mockito.when(mockDb.findQuestionsByProvisionType(provType)).thenReturn(Future[Seq[Provision]]{questions})
-        val future = questionService.getQuestionsByProvisionType(provType)
+        val testProvision = Provision(None, "test3", "title", 8.0, createDate(new java.util.Date()), provType )
+        val provisions =  for(i <- 1 to 5) yield testProvision.copy(description=s"title$i")
+        println("provisions are:"  +provisions)
+        Mockito.when(mockDb.findProvisionsByProvisionType(provType)).thenReturn(Future[Seq[Provision]]{provisions})
+        val future = provisionService.getProvisionsByProvisionType(provType)
         whenReady(future) {
           res =>
             println("Result is :" + res)
-            res should equal(questions)
-            Mockito.verify(mockDb).findAllQuestions
+            res should equal(provisions)
+            Mockito.verify(mockDb).findAllProvisions
         }
       }
     }

@@ -18,7 +18,7 @@ class RestInterface(implicit val executionContext: ExecutionContext) extends Htt
   
   val provisionService = new PersistedProvisionService(persistence)
 
-  val routes: Route = questionRoutes
+  val routes: Route = provisionRoutes
 
 }
 

@@ -32,40 +32,40 @@ class ProvisionResourceSpec extends FreeSpec with  ScalatestRouteTest with Provi
   "The ProvisionResource" - {
     "when calling PUT provisions with JsonPayLoad" - {
       "should return 201" in {
-        val testQuestion = Provision(None, "1", "title", 1.0, createDate(new java.util.Date()), COUNCIL )
-        Mockito.when(provisionService.createQuestion(testQuestion)).thenReturn(Future[Option[String]]{Some("1")})
+        val testProvision = Provision(None, "1", "title", 1.0, createDate(new java.util.Date()), COUNCIL )
+        Mockito.when(provisionService.createProvision(testProvision)).thenReturn(Future[Option[String]]{Some("1")})
         
-        Post("/provisions", testQuestion) ~> questionRoutes ~> check {
+        Post("/provisions", testProvision) ~> provisionRoutes ~> check {
           status should equal(spray.http.StatusCodes.Created)
         }
       }
     }
     
-    "when calling PUT provisions for an existing question with JsonPayLoad" - {
+    "when calling PUT provisions for an existing provision with JsonPayLoad" - {
       "should return 406" in {
-        val testQuestion = Provision(None, "2", "title", 2.0, createDate(new java.util.Date()), COUNCIL )
-        Mockito.when(provisionService.createQuestion(testQuestion)).thenReturn(Future[Option[String]]{None})
-        Post("/provisions", testQuestion) ~> questionRoutes ~> check {
+        val testProvision = Provision(None, "2", "title", 2.0, createDate(new java.util.Date()), COUNCIL )
+        Mockito.when(provisionService.createProvision(testProvision)).thenReturn(Future[Option[String]]{None})
+        Post("/provisions", testProvision) ~> provisionRoutes ~> check {
           status should equal(spray.http.StatusCodes.Conflict)
         }
       }
     }
-    "when calling GET provisions for an existing question with JsonPayLoad" - {
-      "should return the stored Question" in {
-        val testQuestion = Provision(None, "3", "title", 3.0, createDate(new java.util.Date()), COUNCIL )
-        Mockito.when(provisionService.getQuestionById(testQuestion.user.toInt)).thenReturn(Future[Option[Provision]]{Some(testQuestion)})
-        Get(s"/provisions/${testQuestion.user}") ~> questionRoutes ~> check {
-          val returnedQuestion  =responseAs[Provision]
-          returnedQuestion should equal(testQuestion)
+    "when calling GET provisions for an existing provision with JsonPayLoad" - {
+      "should return the stored provision" in {
+        val testProvision = Provision(None, "3", "title", 3.0, createDate(new java.util.Date()), COUNCIL )
+        Mockito.when(provisionService.getProvisionById(testProvision.user.toInt)).thenReturn(Future[Option[Provision]]{Some(testProvision)})
+        Get(s"/provisions/${testProvision.user}") ~> provisionRoutes ~> check {
+          val returnedprovision  =responseAs[Provision]
+          returnedprovision should equal(testProvision)
         }
       }
     }
     
-    "when calling GET provisions for a non existing question with JsonPayLoad" - {
+    "when calling GET provisions for a non existing provision with JsonPayLoad" - {
       "should return No Content" in {
-        val testQuestion = Provision(None, "4", "title", 4.0, createDate(new java.util.Date()), COUNCIL )
-        Mockito.when(provisionService.getQuestionById(testQuestion.user.toInt)).thenReturn(Future[Option[Provision]]{None})
-        Get(s"/provisions/${testQuestion.user}") ~> questionRoutes ~> check {
+        val testProvision = Provision(None, "4", "title", 4.0, createDate(new java.util.Date()), COUNCIL )
+        Mockito.when(provisionService.getProvisionById(testProvision.user.toInt)).thenReturn(Future[Option[Provision]]{None})
+        Get(s"/provisions/${testProvision.user}") ~> provisionRoutes ~> check {
           
           status should equal(spray.http.StatusCodes.NotFound)
           
@@ -75,13 +75,13 @@ class ProvisionResourceSpec extends FreeSpec with  ScalatestRouteTest with Provi
     
     "when calling GET provisions for all provisions" - {
       "should return all persisted provisions" in {
-        val testQuestion = Provision(None, "5", "title", 5.0, createDate(new java.util.Date()), COUNCIL )
-        val testQuestion2 = testQuestion.copy(user="fo")
-        val allQuestions  = Vector(testQuestion, testQuestion2)
-        Mockito.when(provisionService.getAllQuestions).thenReturn(Future[Seq[Provision]]{allQuestions})
-        Get("/provisions") ~> questionRoutes ~> check {
-          val returnedQuestions  =responseAs[Seq[Provision]]
-          returnedQuestions should equal(allQuestions)
+        val testProvision = Provision(None, "5", "title", 5.0, createDate(new java.util.Date()), COUNCIL )
+        val testProvision2 = testProvision.copy(user="fo")
+        val allProvisions  = Vector(testProvision, testProvision2)
+        Mockito.when(provisionService.getAllProvisions).thenReturn(Future[Seq[Provision]]{allProvisions})
+        Get("/provisions") ~> provisionRoutes ~> check {
+          val returnedprovisions  =responseAs[Seq[Provision]]
+          returnedprovisions should equal(allProvisions)
         }
       }
     }
@@ -89,54 +89,54 @@ class ProvisionResourceSpec extends FreeSpec with  ScalatestRouteTest with Provi
     "when calling GET provisions with a provisionType" - {
       "should return all persisted questtions for that type" in {
         val provType  = COUNCIL
-        val testQuestion = Provision(None, "6", "title", 6.0, createDate(new java.util.Date()), provType)
-        val testQuestion2 = testQuestion.copy(user="fo")
-        val allQuestions  = Vector(testQuestion, testQuestion2)
-        Mockito.when(provisionService.getQuestionsByProvisionType(provType)).thenReturn(Future[Seq[Provision]]{allQuestions})
-        Get("/provisions/provisionType/" + provType.toString()) ~> questionRoutes ~> check {
-          val returnedQuestions  =responseAs[Seq[Provision]]
-          returnedQuestions should equal(allQuestions)
+        val testProvision = Provision(None, "6", "title", 6.0, createDate(new java.util.Date()), provType)
+        val testProvision2 = testProvision.copy(user="fo")
+        val allProvisions  = Vector(testProvision, testProvision2)
+        Mockito.when(provisionService.getProvisionsByProvisionType(provType)).thenReturn(Future[Seq[Provision]]{allProvisions})
+        Get("/provisions/provisionType/" + provType.toString()) ~> provisionRoutes ~> check {
+          val returnedprovisions  =responseAs[Seq[Provision]]
+          returnedprovisions should equal(allProvisions)
         }
       }
     }
     
     
-    "when calling DELETE provisions for aN existing question with JsonPayLoad" - {
+    "when calling DELETE provisions for aN existing provision with JsonPayLoad" - {
       "should return Failure when delete operation returns false" in {
-        val testQuestion = Provision(None ,"7", "title", 7.0, createDate(new java.util.Date()), COUNCIL )
-        Mockito.when(provisionService.deleteQuestion(testQuestion.user)).thenReturn(Future[Boolean]{false})
-        Delete(s"/provisions/${testQuestion.user}") ~> questionRoutes ~> check {
+        val testProvisions = Provision(None ,"7", "title", 7.0, createDate(new java.util.Date()), COUNCIL )
+        Mockito.when(provisionService.deleteProvision(testProvisions.user)).thenReturn(Future[Boolean]{false})
+        Delete(s"/provisions/${testProvisions.user}") ~> provisionRoutes ~> check {
           println(s"Status for false  is:$status")
           
           status should equal(spray.http.StatusCodes.NotFound)
 
         }
-        Mockito.verify(provisionService).deleteQuestion(testQuestion.user)
+        Mockito.verify(provisionService).deleteProvision(testProvisions.user)
         
       }
     }
     
-    "when calling DELETE provisions for aN existing question with JsonPayLoad" - {
+    "when calling DELETE provisions for aN existing provision with JsonPayLoad" - {
       "should return Success when delete operation returns true" in {
-        val testQuestion = Provision(None ,"8", "title", 8.0, createDate(new java.util.Date()), COUNCIL )
-        Mockito.when(provisionService.deleteQuestion(testQuestion.user)).thenReturn(Future[Boolean]{true})
-        Delete(s"/provisions/${testQuestion.user}") ~> questionRoutes ~> check {
+        val testProvision = Provision(None ,"8", "title", 8.0, createDate(new java.util.Date()), COUNCIL )
+        Mockito.when(provisionService.deleteProvision(testProvision.user)).thenReturn(Future[Boolean]{true})
+        Delete(s"/provisions/${testProvision.user}") ~> provisionRoutes ~> check {
           println(s"Status for true  is:$status")
           status should equal(spray.http.StatusCodes.NoContent)
 
         }
-        Mockito.verify(provisionService).deleteQuestion(testQuestion.user)
+        Mockito.verify(provisionService).deleteProvision(testProvision.user)
         
       }
     }
     
     
-    "when calling UPDATE provisions for a non-existing question with JsonPayLoad" - {
+    "when calling UPDATE provisions for a non-existing provision with JsonPayLoad" - {
       "should return No Content" in {
-        val testQuestion = Provision(None ,"9", "title", 9.0, createDate(new java.util.Date()), COUNCIL )
-        val questionUpdate = ProvisionUpdate(Some("updateTitle"), Some(9.1))
-        Mockito.when(provisionService.updateQuestion(testQuestion.user, questionUpdate)).thenReturn(Future{None})
-        Put(s"/provisions/${testQuestion.user}", questionUpdate) ~> questionRoutes ~> check {
+        val testProvision = Provision(None ,"9", "title", 9.0, createDate(new java.util.Date()), COUNCIL )
+        val provisionUpdate = ProvisionUpdate(Some("updateTitle"), Some(9.1))
+        Mockito.when(provisionService.updateProvision(testProvision.user, provisionUpdate)).thenReturn(Future{None})
+        Put(s"/provisions/${testProvision.user}", provisionUpdate) ~> provisionRoutes ~> check {
           status should equal(spray.http.StatusCodes.NotFound)
         }
         
@@ -144,17 +144,17 @@ class ProvisionResourceSpec extends FreeSpec with  ScalatestRouteTest with Provi
       }
     }
     
-    "when calling UPDATE provisions for an existing question with JsonPayLoad" - {
-      "should return the updated question" in {
+    "when calling UPDATE provisions for an existing provision with JsonPayLoad" - {
+      "should return the updated provision" in {
         val dt = createDate(new java.util.Date())
-        val testQuestion = Provision(None ,"10", "title", 10.0, dt, COUNCIL )
-        val questionUpdate = ProvisionUpdate(Some("updateTitle"), Some(10.1))
-        val updatedQuestion = testQuestion.copy(description=questionUpdate.description.get, amount=questionUpdate.amount.get, questionDate=dt)
+        val testProvision = Provision(None ,"10", "title", 10.0, dt, COUNCIL )
+        val provisionUpdate = ProvisionUpdate(Some("updateTitle"), Some(10.1))
+        val updatedProvision = testProvision.copy(description=provisionUpdate.description.get, amount=provisionUpdate.amount.get, provisionDate=dt)
         
-        Mockito.when(provisionService.updateQuestion(testQuestion.user, questionUpdate)).thenReturn(Future[Option[Provision]]{Some(updatedQuestion)})
-        Put(s"/provisions/${testQuestion.user}", questionUpdate) ~> questionRoutes ~> check {
-          val returnedQuestion  =responseAs[Provision]
-          returnedQuestion should equal(updatedQuestion)
+        Mockito.when(provisionService.updateProvision(testProvision.user, provisionUpdate)).thenReturn(Future[Option[Provision]]{Some(updatedProvision)})
+        Put(s"/provisions/${testProvision.user}", provisionUpdate) ~> provisionRoutes ~> check {
+          val returnedprovision  =responseAs[Provision]
+          returnedprovision should equal(updatedProvision)
           status should equal(spray.http.StatusCodes.OK)
         }
         

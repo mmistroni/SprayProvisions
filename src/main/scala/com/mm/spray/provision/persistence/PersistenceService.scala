@@ -32,34 +32,34 @@ class PersistenceService {
         Provision(None, "978-1783281411", "Learning Concurrent Programming in Scala", 0.5, new LocalDate(2014, 11, 25), COUNCIL),
         Provision(None, "978-1783283637", "Scala for Java Developers", 0.6, new LocalDate(2014, 6, 11), PHONE))))
 
-  def createQuestion(input: Provision) = {
+  def createProvision(input: Provision) = {
     println("Real db executing real things....")
     db.run(provisions += input) map { _ => input }
   }
 
-  def findAllQuestions = {
+  def findAllProvisions = {
     db.run(provisions.result)
   }
 
-  def findQuestionsByProvisionType(provType: ProvisionTypeEnum) = db.run(provisions.filter { _.provisionType === provType } result)
+  def findProvisionsByProvisionType(provType: ProvisionTypeEnum) = db.run(provisions.filter { _.provisionType === provType } result)
 
-  def findQuestionByQuestionId(id: Int): Future[Option[Provision]] = {
+  def findProvisionByProvisionId(id: Int): Future[Option[Provision]] = {
     val query = provisions.filter(_.questionId === id)
     db.run(query.result.headOption)
   }
 
-  def findQuestionById(id: String): Future[Option[Provision]] = {
+  def findProvisionById(id: String): Future[Option[Provision]] = {
     val query = provisions.filter(_.user === id)
     db.run(query.result.headOption)
   }
 
-  def persistQuestion(question: Provision) = db.run(provisions += question) map { _ => question }
+  def persistProvision(question: Provision) = db.run(provisions += question) map { _ => question }
 
-  def deleteQuestionById(id: Int) = db.run(provisions.filter { _.questionId === id } delete) map { _ > 0 }
+  def deleteProvisionById(id: Int) = db.run(provisions.filter { _.questionId === id } delete) map { _ > 0 }
 
-  def deleteQuestionByQuestionId(id: Int) = db.run(provisions.filter { _.questionId === id } delete) map { _ > 0 }
+  def deleteProvisionByProvisionId(id: Int) = db.run(provisions.filter { _.questionId === id } delete) map { _ > 0 }
 
-  def updateQuestion(id: Int, desc: Option[String], amount: Option[Double]): Future[Option[Provision]] = db.run {
+  def updateProvision(id: Int, desc: Option[String], amount: Option[Double]): Future[Option[Provision]] = db.run {
     val updateAndSelect = for {
       updatesCount <- provisions.filter(_.questionId === id).map(q => (q.description, q.amount)).update(desc.get, amount.get)
       updatedCatOpt <- updatesCount match {
@@ -71,32 +71,5 @@ class PersistenceService {
     updateAndSelect.transactionally
   }
 
-  /**
-   * http://stackoverflow.com/questions/33139758/slick-update-return-the-updated-object/36846346
-   * db.run {
-   * val updateAndSelect = for {
-   * updatesCount <- cats.filter(_.id === id).update(cat)
-   * updatedCatOpt <- updatesCount match {
-   * case 0 => DBIO.successful(Option.empty[Cat])
-   * case _ => cats.filter(_.id === id).result.map(_.headOption)
-   * }
-   * } yield updatedCatOpt
-   *
-   * updateAndSelect.transactionally
-   * }
-   *
-   *
-   * {
-   * val query = for (question <- questions.filter { _.id === id }) yield (question.title, question.text)
-   * val res = db.run {
-   * val updateCount = query.update(ttl.get, txt.get)) map { _ > 0 }
-   * updateCount match {
-   * case false => DBIO.successful(Option.empty[Question])
-   * case true => findQuestionByQuestionId(id)
-   * }
-   * }
-   * res
-   * }
-   */
-
+  
 }
