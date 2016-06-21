@@ -100,6 +100,23 @@ class ProvisionResourceSpec extends FreeSpec with  ScalatestRouteTest with Provi
       }
     }
     
+    "when calling GET provisions with a provisionDate" - {
+      "should return all persisted provisions newer than the date" in {
+        val provDateStr  = "2015-01-01"
+        import org.joda.time.LocalDate
+        val locDate = LocalDate.parse(provDateStr)
+        val testProvision = Provision(None, "6", "title", 6.0, createDate(new java.util.Date()), COUNCIL)
+        val testProvision2 = testProvision.copy(user="fo")
+        val allProvisions  = Vector(testProvision, testProvision2)
+        Mockito.when(provisionService.getProvisionsByProvisionDate(locDate)).thenReturn(Future[Seq[Provision]]{allProvisions})
+        Get("/provisions/provisionDate/" + provDateStr) ~> provisionRoutes ~> check {
+          val returnedprovisions  =responseAs[Seq[Provision]]
+          returnedprovisions should equal(allProvisions)
+        }
+      }
+    }
+    
+    
     
     "when calling DELETE provisions for aN existing provision with JsonPayLoad" - {
       "should return Failure when delete operation returns false" in {

@@ -28,7 +28,8 @@ libraryDependencies ++= {
     "io.spray" %% "spray-testkit" % SprayVersion  % "test",
     "org.mockito" % "mockito-core" % "1.9.5" % "test",
     "joda-time" % "joda-time" % "2.9.3",
-    "com.github.tototoshi" %% "slick-joda-mapper" % "2.1.0"
+    "com.github.tototoshi" %% "slick-joda-mapper" % "2.1.0",
+    "mysql" % "mysql-connector-java" % "5.1.12"
     
     
   )
@@ -39,6 +40,14 @@ libraryDependencies ++= Seq(
 )
 
 // Assembly settings
-mainClass in Global := Some("com.danielasfregola.quiz.management.Main")
+mainClass in Global := Some("com.mm.spray.provision.Main")
 
-jarName in assembly := "quiz-management-server.jar"
+jarName in assembly := "spray-provisionApp.jar"
+
+assemblyMergeStrategy in assembly := {
+  case PathList("javax", "mail", xs @ _*)         => MergeStrategy.first
+  case PathList("org", "slf4j", xs @ _*)         => MergeStrategy.first
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}

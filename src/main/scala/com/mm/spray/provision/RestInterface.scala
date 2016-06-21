@@ -7,15 +7,17 @@ import spray.routing._
 import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
 import com.mm.spray.provision.persistence.PersistenceService
-class RestInterface(implicit val executionContext: ExecutionContext) extends HttpServiceActor with Resources {
+class RestInterface(productionFlag:Boolean)(implicit val executionContext: ExecutionContext) extends HttpServiceActor with Resources {
 
   def receive = runRoute(routes)
 
   val persistence = new PersistenceService
-  persistence.createSchema() onSuccess { 
-    case _ => persistence.createDataset()
+  if (!productionFlag) {
+    println("Not in prod. creating Schema..")
+    persistence.createSchema() onSuccess { 
+      case _ => persistence.createDataset()
+    }
   }
-  
   val provisionService = new PersistedProvisionService(persistence)
 
   val routes: Route = provisionRoutes

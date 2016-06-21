@@ -9,8 +9,8 @@ Sample URS to use for testing:
 CREATE A PROVISION
 
 curl -v -H "Content-Type: application/json" 
-               -X POST http://localhost:5000/provisions 
-               -d "{\"user\":\"marco\", \"description\":\"testdesc\", \"amount\":1.1, \"questionDate\":\"2016-06-13\", \"provisionType\":\"COUNCIL\"}"
+               -X POST http://localhost:80/provisions 
+               -d "{\"user\":\"marco\", \"description\":\"testdesc\", \"amount\":1.1, \"provisionDate\":\"2016-06-13\", \"provisionType\":\"COUNCIL\"}"
                
                
 GET ALL PROVISIONS

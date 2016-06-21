@@ -149,6 +149,24 @@ class PersistedProvisionServiceSpec extends FreeSpec with Matchers {
       }
     }
     
+    "when calling GETprovisionByDate " - {
+      "should return all the provisions newer than supplied date" in {
+        val provType = COUNCIL
+        val provDateStr = "2015-04-04"
+        val locDate = LocalDate.parse(provDateStr)
+        val testProvision = Provision(None, "test3", "title", 8.0, createDate(new java.util.Date()), provType )
+        val provisions =  for(i <- 1 to 5) yield testProvision.copy(description=s"title$i")
+        println("provisions are:"  +provisions)
+        Mockito.when(mockDb.findProvisionByDate(locDate)).thenReturn(Future[Seq[Provision]]{provisions})
+        val future = provisionService.getProvisionsByProvisionDate(locDate)
+        whenReady(future) {
+          res =>
+            println("Result is :" + res)
+            res should equal(provisions)
+            Mockito.verify(mockDb).findAllProvisions
+        }
+      }
+    }
     
   }
 }

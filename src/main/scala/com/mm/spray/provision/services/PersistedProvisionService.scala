@@ -42,6 +42,11 @@ class PersistedProvisionService(persistenceService:PersistenceService)  extends 
   
   }
   
+  
+  override def getProvisionsByProvisionDate(provisionDate:LocalDate): Future[Seq[Provision]] = {
+    db.findProvisionByDate(provisionDate)
+  }
+  
   override def getAllProvisions:Future[Seq[Provision]] =  {
     db.findAllProvisions
   }

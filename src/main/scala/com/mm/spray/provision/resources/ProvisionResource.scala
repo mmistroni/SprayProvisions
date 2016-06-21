@@ -10,6 +10,8 @@ import MediaTypes._
 import com.mm.spray.provision.entities.ProvisionTypeEnum._
 import com.mm.spray.provision.entities.ProvisionTypeEnum
 import spray.http.StatusCodes._
+import com.mm.spray.provision.serializers.CustomJodaLocalDateSerializer
+
 
 trait ProvisionResource extends MyHttpService {
   val provisionService: ProvisionService
@@ -30,6 +32,14 @@ trait ProvisionResource extends MyHttpService {
     path ("provisionType" / Segment){provisionType =>
       get {
         complete(provisionService.getProvisionsByProvisionType(ProvisionTypeEnum.withName(provisionType)))
+      }
+    } ~
+    path ("provisionDate" / Segment){provisionDateStr =>
+      get {
+        import org.joda.time.LocalDate
+        import org.json4s._
+        val queryDate = LocalDate.parse(provisionDateStr)
+        complete(provisionService.getProvisionsByProvisionDate(queryDate))
       }
     } ~
     path(Segment) {id =>

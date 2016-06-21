@@ -34,6 +34,11 @@ class ProvisionService(implicit val executionContext:ExecutionContext) {
     provisions.filter(_.provisionType == provisionType)
   }
   
+  def getProvisionsByProvisionDate(provisionDate:LocalDate): Future[Seq[Provision]] = Future{
+    provisions.filter(_.provisionDate.isAfter(provisionDate))
+  }
+  
+  
   def updateProvision(id: String, update: ProvisionUpdate): Future[Option[Provision]] = {
     
     def updateEntity(question: Provision): Provision = {

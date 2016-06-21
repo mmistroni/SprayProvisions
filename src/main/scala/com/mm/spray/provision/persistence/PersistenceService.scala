@@ -32,19 +32,26 @@ class PersistenceService {
         Provision(None, "978-1783281411", "Learning Concurrent Programming in Scala", 0.5, new LocalDate(2014, 11, 25), COUNCIL),
         Provision(None, "978-1783283637", "Scala for Java Developers", 0.6, new LocalDate(2014, 6, 11), PHONE))))
 
-  def createProvision(input: Provision) = {
+	def createProvision(input: Provision) = {
     println("Real db executing real things....")
     db.run(provisions += input) map { _ => input }
   }
 
   def findAllProvisions = {
-    db.run(provisions.result)
+    // limited to last 15
+    db.run(provisions.take(15).result)
   }
 
   def findProvisionsByProvisionType(provType: ProvisionTypeEnum) = db.run(provisions.filter { _.provisionType === provType } result)
 
+  def findProvisionByDate(provisionDate:LocalDate):Future[Seq[Provision]]= {
+    val query = provisions.filter(_.provisionDate >= provisionDate)
+    db.run(query.result)
+  }
+  
+  
   def findProvisionByProvisionId(id: Int): Future[Option[Provision]] = {
-    val query = provisions.filter(_.questionId === id)
+    val query = provisions.filter(_.provisionId === id)
     db.run(query.result.headOption)
   }
 
@@ -55,16 +62,16 @@ class PersistenceService {
 
   def persistProvision(question: Provision) = db.run(provisions += question) map { _ => question }
 
-  def deleteProvisionById(id: Int) = db.run(provisions.filter { _.questionId === id } delete) map { _ > 0 }
+  def deleteProvisionById(id: Int) = db.run(provisions.filter { _.provisionId === id } delete) map { _ > 0 }
 
-  def deleteProvisionByProvisionId(id: Int) = db.run(provisions.filter { _.questionId === id } delete) map { _ > 0 }
+  def deleteProvisionByProvisionId(id: Int) = db.run(provisions.filter { _.provisionId === id } delete) map { _ > 0 }
 
   def updateProvision(id: Int, desc: Option[String], amount: Option[Double]): Future[Option[Provision]] = db.run {
     val updateAndSelect = for {
-      updatesCount <- provisions.filter(_.questionId === id).map(q => (q.description, q.amount)).update(desc.get, amount.get)
+      updatesCount <- provisions.filter(_.provisionId === id).map(q => (q.description, q.amount)).update(desc.get, amount.get)
       updatedCatOpt <- updatesCount match {
         case 0 => DBIO.successful(Option.empty[Provision])
-        case _ => provisions.filter(_.questionId === id).result.map(_.headOption)
+        case _ => provisions.filter(_.provisionId === id).result.map(_.headOption)
       }
     } yield updatedCatOpt
 

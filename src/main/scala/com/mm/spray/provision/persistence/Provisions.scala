@@ -7,21 +7,21 @@ import com.mm.spray.provision.entities.ProvisionTypeEnum._
 
 import org.joda.time.LocalDate
 
-class Provisions(tag: Tag) extends Table[Provision](tag, "PROVISIONS") {
+class Provisions(tag: Tag) extends Table[Provision](tag, "PROVISION") {
   
   implicit val myEnumMapper = MappedColumnType.base[ProvisionTypeEnum, Int](
     e => e.id,
     s => ProvisionTypeEnum.apply(s)
     )
 
-  def questionId = column[Int]("questionId", O.PrimaryKey, O.AutoInc)
-  def user = column[String]("id", O.Length(10))
+  def provisionId = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+  def user = column[String]("user", O.Length(10))
   def description = column[String]("description", O.Length(20))
   def amount = column[Double]("amount", O.Length(50))
-  def questionDate = column[LocalDate]("questionDate")
+  def provisionDate = column[LocalDate]("provisionDate")
   def provisionType = column[ProvisionTypeEnum]("provisionType")
 
-  def * = (questionId.?, user, description, amount, questionDate, provisionType) <>
+  def * = (provisionId.?, user, description, amount, provisionDate, provisionType) <>
     ((Provision.apply _).tupled, Provision.unapply _)
 
 }
