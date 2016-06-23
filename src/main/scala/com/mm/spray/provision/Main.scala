@@ -13,13 +13,12 @@ object Main extends App {
   val config = ConfigFactory.load()
   val host = config.getString("http.host")
   val port = config.getInt("http.port")
-  val production = config.getBoolean("db.production")
-
+  
   implicit val system = ActorSystem("quiz-management-service")
   implicit val executionContext = system.dispatcher
   implicit val timeout = Timeout(10 seconds)
 
-  val api = system.actorOf(Props(new RestInterface(production)))
+  val api = system.actorOf(Props(new RestInterface(false)))
 
   IO(Http).ask(Http.Bind(listener = api, interface = host, port = port))
     .mapTo[Http.Event]

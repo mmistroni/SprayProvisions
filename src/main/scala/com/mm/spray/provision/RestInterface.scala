@@ -12,12 +12,14 @@ class RestInterface(productionFlag:Boolean)(implicit val executionContext: Execu
   def receive = runRoute(routes)
 
   val persistence = new PersistenceService
-  if (!productionFlag) {
-    println("Not in prod. creating Schema..")
-    persistence.createSchema() onSuccess { 
-      case _ => persistence.createDataset()
-    }
+  /**
+  persistence.createSchema() onSuccess { 
+      
+      case _ => println("Creating dataset");persistence.createDataset()
+    
   }
+  * 
+  */
   val provisionService = new PersistedProvisionService(persistence)
 
   val routes: Route = provisionRoutes

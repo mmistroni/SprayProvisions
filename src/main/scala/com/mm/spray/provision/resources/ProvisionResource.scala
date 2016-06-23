@@ -35,6 +35,15 @@ trait ProvisionResource extends MyHttpService {
       }
     } ~
     path ("provisionDate" / Segment){provisionDateStr =>
+      /**
+       * For parsing the date in the URL: You should look at the PathMatcher1, 
+       * and create a PathMatcher1[LocalDate], 
+       * which you can do by flatmapping on Segment which is a PathMatcher1[String] (in PathMatchers), 
+       * inside the flatMap you do your parsing of the date string, (return Some(date) if you find a date, None if not)
+			I don’t know anything about json4s, but could imagine that you can call that from the flatMap.
+       * 
+       * 
+       */
       get {
         import org.joda.time.LocalDate
         import org.json4s._

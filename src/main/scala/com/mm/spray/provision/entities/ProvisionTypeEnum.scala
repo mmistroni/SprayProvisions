@@ -3,6 +3,7 @@ package com.mm.spray.provision.entities
 object  ProvisionTypeEnum  extends Enumeration {
   type ProvisionTypeEnum = Value
 
+  val UNKNOWN = Value(0)
   val HOUSE_INSURANCE = Value(1)
   val PHONE = Value(2)
   val TISCALI = Value(3)

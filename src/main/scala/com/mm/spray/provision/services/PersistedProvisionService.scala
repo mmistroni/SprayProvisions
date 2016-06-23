@@ -16,6 +16,7 @@ class PersistedProvisionService(persistenceService:PersistenceService)  extends 
   val db = persistenceService
   
   override def createProvision(question: Provision): Future[Option[String]] =  {
+    
     try {
       db.createProvision(question).map(q => Some(q.user))
     } catch {

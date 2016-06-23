@@ -9,7 +9,8 @@ organization := "com.mm"
 scalaVersion := "2.11.5"
 
 resolvers ++= Seq("Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-                  "Spray Repository"    at "http://repo.spray.io")
+                  "Spray Repository"    at "http://repo.spray.io",
+                  "snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
 
 libraryDependencies ++= {
   val AkkaVersion       = "2.3.9"
@@ -29,8 +30,9 @@ libraryDependencies ++= {
     "org.mockito" % "mockito-core" % "1.9.5" % "test",
     "joda-time" % "joda-time" % "2.9.3",
     "com.github.tototoshi" %% "slick-joda-mapper" % "2.1.0",
-    "mysql" % "mysql-connector-java" % "5.1.12"
-    
+    "mysql" % "mysql-connector-java" % "5.1.38",
+    "com.typesafe.slick" %% "slick-hikaricp" % "3.1.1",
+    "com.typesafe.slick" %% "slick-codegen" % "3.1.1"
     
   )
 }

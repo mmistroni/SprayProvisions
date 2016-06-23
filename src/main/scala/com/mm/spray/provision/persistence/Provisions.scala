@@ -7,7 +7,7 @@ import com.mm.spray.provision.entities.ProvisionTypeEnum._
 
 import org.joda.time.LocalDate
 
-class Provisions(tag: Tag) extends Table[Provision](tag, "PROVISION") {
+class Provisions(tag: Tag) extends Table[Provision](tag, "provision") {
   
   implicit val myEnumMapper = MappedColumnType.base[ProvisionTypeEnum, Int](
     e => e.id,

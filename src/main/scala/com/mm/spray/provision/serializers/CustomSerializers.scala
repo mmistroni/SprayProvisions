@@ -38,7 +38,6 @@ case object CustomJodaLocalDateSerializer extends CustomSerializer[org.joda.time
   },
     {
       case date: org.joda.time.LocalDate => {
-        println("JOdaLocalSeralizer.formatting to string")
         val fmt = DateTimeFormat.forPattern("yyyy-MM-dd")
         JString(date.toString(fmt))
       }

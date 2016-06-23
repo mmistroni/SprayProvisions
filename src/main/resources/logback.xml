@@ -11,6 +11,7 @@
     <logger name="akka" level="INFO" />
     <logger name="spray" level="INFO" />
 
+    <logger name="slick.jdbc" level="INFO"/>
     <logger name="com.mm" level="INFO" />
 
     <root level="INFO">

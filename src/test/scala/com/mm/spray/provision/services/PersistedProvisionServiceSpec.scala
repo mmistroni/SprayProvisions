@@ -63,7 +63,7 @@ class PersistedProvisionServiceSpec extends FreeSpec with Matchers {
         val id = 21
         val testProvision = Provision(Some(id), "test", "title", 4.0, createDate(new java.util.Date()), COUNCIL)
         val futureResult = false
-        Mockito.when(mockDb.deleteProvisionById(testProvision.questionId.get)).thenReturn(Future[Boolean] { futureResult })
+        Mockito.when(mockDb.deleteProvisionById(testProvision.provisionId.get)).thenReturn(Future[Boolean] { futureResult })
 
         val future = provisionService.deleteProvision(id.toString)
         whenReady(future) {
@@ -79,7 +79,7 @@ class PersistedProvisionServiceSpec extends FreeSpec with Matchers {
         val id = 22
         val testProvision = Provision(Some(id), "11", "title", 1.0, createDate(new java.util.Date()), COUNCIL)
         val futureResult = true
-        Mockito.when(mockDb.deleteProvisionById(testProvision.questionId.get)).thenReturn(Future[Boolean] { futureResult })
+        Mockito.when(mockDb.deleteProvisionById(testProvision.provisionId.get)).thenReturn(Future[Boolean] { futureResult })
 
         val future = provisionService.deleteProvision(id.toString())
         whenReady(future) {

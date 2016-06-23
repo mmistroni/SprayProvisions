@@ -1,7 +1,7 @@
 package com.mm.spray.provision.persistence
 
 import scala.language.postfixOps
-import slick.driver.H2Driver.api._
+//import slick.driver.H2Driver.api._
 import com.github.tototoshi.slick.H2JodaSupport._
 import scala.concurrent.Future
 import com.mm.spray.provision.entities.ProvisionTypeEnum._
@@ -9,11 +9,19 @@ import org.joda.time.LocalDate
 import com.mm.spray.provision.persistence.Provisions._
 import com.mm.spray.provision.entities.Provision
 import com.mm.spray.provision.entities.ProvisionTypeEnum
+import com.typesafe.config.ConfigFactory
+import slick.driver.MySQLDriver
+import slick.driver.MySQLDriver.backend
+import slick.driver.MySQLDriver.api.MappedColumnType
+import slick.driver.MySQLDriver.api._
 
 class PersistenceService {
   import scala.concurrent.ExecutionContext.Implicits.global
-  lazy val db = Database.forConfig("db")
-
+  val config = ConfigFactory.load()
+  //val driverClass = classForName("com.mysql.jdbc.Driver")
+  Class.forName("com.mysql.jdbc.Driver")
+  lazy val db = backend.Database.forConfig("db")
+  
   implicit val myEnumMapper = MappedColumnType.base[ProvisionTypeEnum, Int](
     e => e.id,
     s => ProvisionTypeEnum.apply(s))
@@ -39,13 +47,14 @@ class PersistenceService {
 
   def findAllProvisions = {
     // limited to last 15
-    db.run(provisions.take(15).result)
+    db.run(provisions.take(15) result)
   }
 
-  def findProvisionsByProvisionType(provType: ProvisionTypeEnum) = db.run(provisions.filter { _.provisionType === provType } result)
+  def findProvisionsByProvisionType(provType: ProvisionTypeEnum) = 
+    db.run(provisions.filter { _.provisionType === provType } take(20) result)
 
   def findProvisionByDate(provisionDate:LocalDate):Future[Seq[Provision]]= {
-    val query = provisions.filter(_.provisionDate >= provisionDate)
+    val query = provisions.filter(_.provisionDate >= provisionDate).take(20)
     db.run(query.result)
   }
   

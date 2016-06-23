@@ -19,7 +19,7 @@ class ProvisionService(implicit val executionContext:ExecutionContext) {
   }
 
   def getProvisionById(id:Int): Future[Option[Provision]] = Future {
-    provisions.find(_.questionId == Some(id))
+    provisions.find(_.provisionId == Some(id))
   }
   
   def getProvision(user: String): Future[Option[Provision]] = Future {
